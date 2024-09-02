@@ -55,7 +55,7 @@ const getUserWithEmail = function(email) {
     });
 };
 
-getUserWithEmail('tristanjacobs@gmail.com');
+// getUserWithEmail('tristanjacobs@gmail.com');
 
 /**
  * Get a single user from the database given their id.
@@ -63,8 +63,25 @@ getUserWithEmail('tristanjacobs@gmail.com');
  * @return {Promise<{}>} A promise to the user.
  */
 const getUserWithId = function(id) {
-  return Promise.resolve(users[id]);
+  return pool
+  .query(`
+    select * from users
+    where id = $1`, [id])
+    .then((result) => {
+      if (result.rows.length > 0) {
+        console.log(result.rows[0])
+        return result.rows[0];
+      } else {
+        return null;
+      }
+    })
+    .catch ((err) => {
+      console.log(err.message);
+      throw err;
+    })
 };
+
+// getUserWithId(7)
 
 /**
  * Add a new user to the database.
