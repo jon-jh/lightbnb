@@ -119,31 +119,21 @@ const addUser = function(user) {
  */
 
 const getAllReservations = function(guest_id, limit = 10) {
+
   return pool
     .query(`
-      SELECT 
-        reservations.id AS reservation_id, 
-        properties.*, 
-        reservations.start_date, 
-        AVG(property_reviews.rating) AS average_rating
-      FROM 
-        reservations 
-      JOIN 
-        properties ON reservations.property_id = properties.id
-      JOIN 
-        property_reviews ON properties.id = property_reviews.property_id
-      WHERE 
-        reservations.guest_id = $1
-      GROUP BY 
-        reservations.id, 
-        properties.id
-      ORDER BY 
-        reservations.start_date 
-      LIMIT $2
-    `, [guest_id, limit])
+      select 
+      reservations.*, properties.title, properties.number_of_bedrooms, properties.number_of_bathrooms, properties.parking_spaces, properties.thumbnail_photo_url, properties.cover_photo_url
+
+      from reservations
+      join properties
+      on property_id = properties.id
+
+      where guest_id = $1
+      limit $2`, [guest_id, limit])
     .then((result) => {
-      console.log(result.rows[0]);
-      return result.rows[0];
+      console.log(result.rows);
+      return (result.rows);
     })
     .catch((err) => {
       console.log(err.message);
