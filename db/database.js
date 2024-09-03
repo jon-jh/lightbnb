@@ -151,19 +151,50 @@ const getAllReservations = function(guest_id, limit = 10) {
  */
 
 const getAllProperties = (options, limit = 10) => {
+  let queryParams = []; // the options AND limit will go here. 
+  
+  
+  // SELECT, FROM
+  let queryString = `
+  select properties.*, avg(property_reviews.rating) as average_rating
+  from properties
+  join property_reviews on properties.id = property_id
+  `
+  // FROM (Continued, if options exist)
 
-  return pool
-    .query(`
-      select * from properties
-      limit $1`, [limit])
-    .then((result) => {
-      console.log(result.rows);
-      return (result.rows);
-    })
-    .catch((err) => {
-      console.log(err.message);
-      throw err;
-    });
+  if (options.city) {
+    queryParams.push(`%${options.city}%`); // queryParams = ['%CityName%']
+    queryString += `WHERE city LIKE $${queryParams.length} `; // queryString = "... WHERE city LIKE $1. To simplify, WHEN THIS IS BEING CALLED, IT ADDS THE LENGTH OF THE ARRAY to the $, making it line up perfectly.
+  }
+
+// We use if / else statements here to check if an option already exists. If it does, then there is already 1 WHERE, so the rest need to be AND.
+
+  if (options.minimum_price_per_night) {
+    queryParams.push(options.minimum_price_per_night);
+    queryString += `${queryParams.length === 1 ? 'WHERE' : 'AND'} cost_per_night >= $${queryParams.length} `;
+  }
+
+  if (options.maximum_price_per_night) {
+    queryParams.push(options.maximum_price_per_night);
+    queryString += `${queryParams.length === 1 ? 'WHERE' : 'AND'} cost_per_night <= $${queryParams.length} `;
+  }
+
+  if (options.minimum_rating) {
+    queryParams.push(options.minimum_rating);
+    queryString += `${queryParams.length === 1 ? 'WHERE' : 'AND'} rating >= $${queryParams.length} `;
+  }
+
+  // WHERE
+  queryParams.push(limit)
+  queryString += `
+  group by properties.id
+  order by cost_per_night
+  limit $${queryParams.length}`
+  
+  //First define the same pool.query for the sql as usual, but move the actual SQL into variables that can be changed.
+  return pool.query(
+    queryString, queryParams)
+    .then((res) => res.rows)
 };
 
 // getAllProperties({}, 1) // call the function with limit 1 instead of the default (10)
