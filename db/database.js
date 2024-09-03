@@ -123,11 +123,7 @@ const getAllReservations = function(guest_id, limit = 10) {
     .query(`
       SELECT 
         reservations.id AS reservation_id, 
-        properties.title, 
-        properties.number_of_bedrooms, 
-        properties.number_of_bathrooms, 
-        properties.parking_spaces, 
-        properties.cost_per_night, 
+        properties.*, 
         reservations.start_date, 
         AVG(property_reviews.rating) AS average_rating
       FROM 
@@ -140,11 +136,7 @@ const getAllReservations = function(guest_id, limit = 10) {
         reservations.guest_id = $1
       GROUP BY 
         reservations.id, 
-        properties.title, 
-        properties.number_of_bedrooms, 
-        properties.number_of_bathrooms, 
-        properties.parking_spaces, 
-        properties.cost_per_night
+        properties.id
       ORDER BY 
         reservations.start_date 
       LIMIT $2
