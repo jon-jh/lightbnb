@@ -17,7 +17,7 @@ const pool = new Pool({
 
 pool.connect()
   .then(client => {
-    console.log('Connection success');
+    console.log('Connected to the database');
     client.release();
   })
   .catch(err => {
@@ -104,6 +104,7 @@ const addUser = function(user) {
       throw err;
     });
 };
+
 // const newUser = {
 //   name: 'jon',
 //   email: 'jon@jon.com',
@@ -197,7 +198,7 @@ const getAllProperties = (options, limit = 10) => {
     .then((res) => res.rows)
 };
 
-// getAllProperties({}, 1) // call the function with limit 1 instead of the default (10)
+// getAllProperties({}, 1)
 
 
 /**
