@@ -1,6 +1,13 @@
-@import "property-listings";
-@import "forms";
-@import "header";
+@use "property-listings";
+@use "forms";
+@use "header";
+@import url("https://fonts.googleapis.com/css2?family=Afacad+Flux:wght@100..1000&family=Honk&display=swap");
+
+body {
+  background-color: #fffff0;
+  min-width: 400px;
+  font-family: "Roboto", sans-serif;
+}
 
 .hidden {
   display: none;

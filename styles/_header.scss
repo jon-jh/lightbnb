@@ -1,12 +1,44 @@
+.header-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
 .page-header {
+  background-color: rgb(23, 27, 44);
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  border-radius: 40px;
+  max-width: 560px;
+  width: 100%; /* Ensure it takes up the full width of the container */
+  margin: 0 auto; /* Center the header */
+
+  &__logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+
   &__user-links {
     ul {
       list-style: none;
       display: flex;
+      margin: 0;
+      padding: 0;
+
       li {
         padding: 0;
         margin: 0 10px;
         cursor: pointer;
+        color: white;
+        font-size: 1rem;
+        transition: color 0.3s;
+
+        &:hover {
+          color: #d1e8ff; /* Lighter blue on hover */
+        }
       }
     }
   }
